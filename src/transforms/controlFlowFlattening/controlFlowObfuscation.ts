@@ -18,7 +18,7 @@ import {
 } from "../../util/gen";
 import { containsLexicallyBoundVariables } from "../../util/identifiers";
 import { clone, getBlockBody } from "../../util/insert";
-import { getRandomInteger, shuffle } from "../../util/random";
+import {getRandomInteger, getRealRandomInteger, shuffle} from "../../util/random";
 import Transform from "../transform";
 
 /**
@@ -131,7 +131,7 @@ export default class ControlFlowObfuscation extends Transform {
       while (states.length < 5) {
         var newState;
         do {
-          newState = getRandomInteger(0, 1000 + states.length);
+          newState = getRealRandomInteger(0, 1000 + states.length);
         } while (selection.has(newState));
 
         ok(!isNaN(newState));

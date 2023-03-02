@@ -18,7 +18,7 @@ import {
 } from "../util/gen";
 import { prepend } from "../util/insert";
 import { getBlock } from "../traverse";
-import { choice, getRandomInteger } from "../util/random";
+import {choice, getRandomInteger, getRealRandomInteger} from "../util/random";
 import { ObfuscateOrder } from "../order";
 import { ok } from "assert";
 import { OPERATOR_PRECEDENCE } from "../precedence";
@@ -129,7 +129,7 @@ export default class Calculator extends Transform {
       if (typeof this.ops[operator] !== "number") {
         var newState;
         do {
-          newState = getRandomInteger(
+          newState = getRealRandomInteger(
             -1000,
             1000 + Object.keys(this.ops).length * 5
           );

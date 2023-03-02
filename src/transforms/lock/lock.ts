@@ -24,7 +24,7 @@ import {
   LogicalExpression,
 } from "../../util/gen";
 import traverse, { getBlock, isBlock } from "../../traverse";
-import { choice, getRandomInteger } from "../../util/random";
+import {choice, fixRandom, getRandomInteger} from "../../util/random";
 import {
   CrashTemplate1,
   CrashTemplate2,
@@ -235,7 +235,7 @@ export default class Lock extends Transform {
         MemberExpression(Identifier("Date"), Literal("now"), true),
         []
       );
-      if (Math.random() > 0.5) {
+      if (fixRandom() > 0.5) {
         dateNow = CallExpression(
           MemberExpression(
             NewExpression(Identifier("Date"), []),
@@ -244,7 +244,7 @@ export default class Lock extends Transform {
           []
         );
       }
-      if (Math.random() > 0.5) {
+      if (fixRandom() > 0.5) {
         dateNow = CallExpression(
           MemberExpression(
             MemberExpression(
@@ -317,7 +317,7 @@ export default class Lock extends Transform {
               `(${fn}+"").indexOf("[native code]") == -1`
             ).single().expression;
 
-            if (Math.random() > 0.5) {
+            if (fixRandom() > 0.5) {
               test = Template(
                 `${fn}.toString().split("{ [native code] }").length <= 1`
               ).single().expression;
@@ -528,7 +528,7 @@ export default class Lock extends Transform {
             );
 
             test = UnaryExpression("!", test);
-            if (Math.random() > 0.5) {
+            if (fixRandom() > 0.5) {
               test = LogicalExpression(
                 "||",
                 BinaryExpression(

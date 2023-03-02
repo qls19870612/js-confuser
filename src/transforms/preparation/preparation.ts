@@ -100,7 +100,7 @@ class ExplicitIdentifiers extends Transform {
         }
       }
 
-      this.log(object.name, "->", `'${object.name}'`);
+      // this.log(object.name, "->", `'${object.name}'`);
 
       this.replace(object, Literal(object.name));
       parents[0].computed = true;

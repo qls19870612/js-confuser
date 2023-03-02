@@ -35,34 +35,43 @@ export type EnterCallback = (
   parents: Node[]
 ) => ExitCallback | "EXIT" | void;
 export type ExitCallback = () => void;
-
+var otherType = global['otherType']= global['otherType']||{};
 export function walk(
   object: Node | Node[],
   parents: Node[],
   onEnter: EnterCallback,
-  seen = new Set<Node>()
+  deep:number = 0
 ): "EXIT" | void {
-  if (typeof object === "object" && object) {
-    if (seen.has(object as any)) {
-      console.log(object);
-      throw new Error("Already seen: " + (object as any).type);
-    }
-    seen.add(object as any);
+  let nextDeep = deep+1;
+  let objType = typeof object;
+  let b = objType === "object";
+  if (b)
+  {
+    otherType[objType] = 1;
+
+  }
+  if (b && object) {
+
 
     var newParents: Node[] = [object as Node, ...parents];
 
     if (!Array.isArray(object)) {
       validateChain(object, parents);
     }
-
+    let startTime = new Date().getTime();
     // 1. Call `onEnter` function and remember any onExit callback returned
     var onExit = onEnter(object as Node, parents);
 
+    let endTime = new Date().getTime();
+
+    if (endTime - startTime > 10) {
+      console.log("walk endTime.startTime:{}", endTime - startTime);
+    }
     // 2. Traverse children
     if (Array.isArray(object)) {
       var copy = [...object];
       for (var element of copy) {
-        if (walk(element, newParents, onEnter) === "EXIT") {
+        if (walk(element, newParents, onEnter,nextDeep) === "EXIT") {
           return "EXIT";
         }
       }
@@ -71,7 +80,7 @@ export function walk(
       var keys = Object.keys(object);
       for (var key of keys) {
         if (!key.startsWith("$")) {
-          if (walk(object[key], newParents, onEnter) === "EXIT") {
+          if (walk(object[key], newParents, onEnter,nextDeep) === "EXIT") {
             return "EXIT";
           }
         }
@@ -84,8 +93,15 @@ export function walk(
 
     // 3. Done with children, call `onExit` callback
     if (onExit) {
+      let startTime = new Date().getTime();
       onExit();
+      let endTime = new Date().getTime();
+
+      if (endTime - startTime > 10) {
+        console.log("walk onExit endTime.startTime:{}", endTime - startTime);
+      }
     }
+
   }
 }
 

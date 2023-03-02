@@ -7,18 +7,23 @@ import {
   Node,
   ArrayExpression,
 } from "./gen";
-
+export let debug:boolean  = false;
 export function choice<T>(choices: T[]): T {
-  var index = Math.floor(Math.random() * choices.length);
+  if (choices.length == 0)
+  {
+    return null;
+  }
+  var index = getRealRandomInteger(0,choices.length);
   return choices[index];
 }
+
 
 /**
  * **Mutates the given array**
  * @param array
  */
 export function shuffle(array: any[]): any[] {
-  array.sort(() => Math.random() - 0.5);
+  array.sort(() => fixRandom() - 0.5);
   return array;
 }
 
@@ -31,17 +36,33 @@ export function getRandomString(length: number) {
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   var charactersLength = characters.length;
   for (var i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    result += characters.charAt(Math.floor(fixRandom() * charactersLength));
   }
   return result;
 }
 
-export function getRandom(min, max) {
+
+export function getRealRandom(min, max) {
   return Math.random() * (max - min) + min;
 }
 
 export function getRandomInteger(min, max) {
-  return Math.floor(getRandom(min, max));
+  if (debug)
+  {
+    return Math.floor(min);
+  }
+  return Math.floor(getRealRandom(min, max));
+}
+export function getRealRandomInteger(min, max) {
+  return Math.floor(getRealRandom(min, max));
+}
+export function fixRandom()
+{
+  if (debug)
+  {
+    return 0;
+  }
+  return Math.random();
 }
 
 export function splitIntoChunks(str: string, size: number) {

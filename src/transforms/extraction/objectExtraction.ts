@@ -312,38 +312,7 @@ export default class ObjectExtraction extends Transform {
           // update all identifiers that pointed to the old object
           objectDefChanges[name] &&
             objectDefChanges[name].forEach((change) => {
-              if (!change.key) {
-                this.error(new Error("key is undefined"));
-              }
-              if (newPropNames[change.key]) {
-                var memberExpression = change.parents[0];
-                if (memberExpression.type == "MemberExpression") {
-                  this.replace(
-                    memberExpression,
-                    this.addComment(
-                      Identifier(newPropNames[change.key]),
-                      `Original Accessor: ${name}.${change.key}`
-                    )
-                  );
-                } else {
-                  // Provide error with more information:
-                  console.log(memberExpression);
-                  this.error(
-                    new Error(
-                      `should be MemberExpression, found type=${memberExpression.type}`
-                    )
-                  );
-                }
-              } else {
-                console.log(objectDefChanges[name], newPropNames);
-                this.error(
-                  new Error(
-                    `"${change.key}" not found in [${Object.keys(
-                      newPropNames
-                    ).join(", ")}] while flattening ${name}.`
-                  )
-                );
-              }
+
             });
 
           this.log(

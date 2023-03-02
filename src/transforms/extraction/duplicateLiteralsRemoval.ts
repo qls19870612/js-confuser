@@ -28,7 +28,7 @@ import { ObfuscateOrder } from "../../order";
 import { isModuleSource } from "../string/stringConcealing";
 import { ComputeProbabilityMap } from "../../probability";
 import { ok } from "assert";
-import { choice, getRandomInteger } from "../../util/random";
+import {choice, fixRandom, getRandomInteger} from "../../util/random";
 
 /**
  * [Duplicate Literals Removal](https://docs.jscrambler.com/code-integrity/documentation/transformations/duplicate-literals-removal) replaces duplicate literals with a variable name.
@@ -138,7 +138,7 @@ export default class DuplicateLiteralsRemoval extends Transform {
 
     // create one if none are available (or by random chance if none are here locally)
     var shouldCreateNew =
-      !getterName || (!hasGetterHere && Math.random() > 0.9);
+      !getterName || (!hasGetterHere && fixRandom() > 0.9);
 
     if (shouldCreateNew) {
       ok(!this.fnGetters.has(lexContext));

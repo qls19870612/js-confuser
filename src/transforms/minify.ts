@@ -440,9 +440,9 @@ export default class Minify extends Transform {
           object.alternate = null;
         }
 
-        if (
+        if (object.alternate &&
           object.consequent.body.length == 1 &&
-          object.alternate &&
+
           object.alternate.body.length == 1
         ) {
           var stmt1 = clone(object.consequent.body[0]);

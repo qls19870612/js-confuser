@@ -10,17 +10,10 @@ import { correctOptions, ObfuscateOptions, validateOptions } from "./options";
 import {
   IJsConfuser,
   IJsConfuserDebugObfuscation,
-  IJsConfuserDebugTransformations,
+  IJsConfuserDebugTransformations, IJsConfuserTransformCallBack,
 } from "./types";
+import {CountTimer} from "../CountTimer";
 
-/**
- * **JsConfuser**: Obfuscates JavaScript.
- * @param code - The code to be obfuscated.
- * @param options - An object of obfuscation options: `{preset: "medium", target: "browser"}`.
- */
-export async function obfuscate(code: string, options: ObfuscateOptions) {
-  return await JsConfuser(code, options);
-}
 
 /**
  * Obfuscates an [ESTree](https://github.com/estree/estree) compliant AST.
@@ -55,36 +48,47 @@ export async function obfuscateAST(AST, options: ObfuscateOptions) {
  */
 var JsConfuser: IJsConfuser = async function (
   code: string,
-  options: ObfuscateOptions
+  options: ObfuscateOptions,
+  callBack:IJsConfuserTransformCallBack
 ): Promise<string> {
   if (typeof code !== "string") {
     throw new TypeError("code must be type string");
   }
+  let countTimer:CountTimer = new CountTimer("obfuscate");
   validateOptions(options);
 
   options = await correctOptions(options);
 
   options.verbose && console.log("* Parsing source code");
-
+  countTimer.addCount("correctOptions");
   var tree = await parseJS(code);
-
+  countTimer.addCount("Parser.parseSync");
   options.verbose && console.log("* Obfuscating...");
 
   var obfuscator = new Obfuscator(options);
 
-  await obfuscator.apply(tree);
-
+  await obfuscator.apply(tree,false,callBack);
+  countTimer.addCount("obfuscator.apply");
   options.verbose && console.log("* Removing $ properties");
 
   remove$Properties(tree);
-
+  countTimer.addCount("remove$Properties");
   options.verbose && console.log("* Generating code");
 
   var result = await compileJs(tree, options);
-
+  countTimer.addCount("Compiler.compileJsSync");
+  countTimer.print();
   return result;
 } as any;
 
+/**
+ * **JsConfuser**: Obfuscates JavaScript.
+ * @param code - The code to be obfuscated.
+ * @param options - An object of obfuscation options: `{preset: "medium", target: "browser"}`.
+ */
+export async function obfuscate(code: string, options: ObfuscateOptions, callBack:IJsConfuserTransformCallBack) {
+  return await JsConfuser(code, options,callBack);
+}
 export var debugTransformations: IJsConfuserDebugTransformations =
   async function debugTransformations(
     code: string,

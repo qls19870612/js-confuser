@@ -162,7 +162,7 @@ JsConfuser.obfuscate(code, {
   target: "node",
   renameVariables: true,
   identifierGenerator: function () {
-    return "$" + Math.random().toString(36).substring(7);
+    return "$" + fixRandom().toString(36).substring(7);
   },
 });
 
@@ -703,7 +703,7 @@ Mix modes using an object with key-value pairs to represent each mode's percenta
 
   // custom variable names
   identifierGenerator: ()=>{
-    return "_0x" + Math.random().toString(16).slice(2, 8);
+    return "_0x" + fixRandom().toString(16).slice(2, 8);
   },
 
   // force encoding on a string
@@ -713,7 +713,7 @@ Mix modes using an object with key-value pairs to represent each mode's percenta
     }
 
     // 60%
-    return Math.random() < 0.6;
+    return fixRandom() < 0.6;
   },
 
   // set limits

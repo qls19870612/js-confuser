@@ -24,7 +24,7 @@ import {
 } from "../util/gen";
 import { getIdentifierInfo, validateChain } from "../util/identifiers";
 import { getVarContext, isForInitialize, isFunction } from "../util/insert";
-import { choice, getRandomInteger, shuffle } from "../util/random";
+import {choice, fixRandom, getRandomInteger, getRealRandomInteger, shuffle} from "../util/random";
 import Transform from "./transform";
 
 export default class HideInitializingCode extends Transform {
@@ -175,8 +175,8 @@ export default class HideInitializingCode extends Transform {
       function numberLiteral(num: number, depth = 1) {
         if (
           depth > 6 ||
-          Math.random() > 0.8 / depth ||
-          Math.random() > 80 / numberLiteralsMade
+          fixRandom() > 0.8 / depth ||
+          fixRandom() > 80 / numberLiteralsMade
         ) {
           return Literal(num);
         }
@@ -198,7 +198,7 @@ export default class HideInitializingCode extends Transform {
           );
         }
 
-        if (Math.random() > 0.5) {
+        if (fixRandom() > 0.5) {
           var fnName = choice(Array.from(map.keys()));
           if (fnName) {
             var inputOutputs = map.get(fnName);
@@ -218,7 +218,7 @@ export default class HideInitializingCode extends Transform {
         var deadValueName = choice(Object.keys(deadValues));
         var actualValue = deadValues[deadValueName];
 
-        if (Math.random() > 0.5) {
+        if (fixRandom() > 0.5) {
           return BinaryExpression(
             "+",
             numberLiteral(num - actualValue, depth + 1),
@@ -245,7 +245,7 @@ export default class HideInitializingCode extends Transform {
           var num;
           var k = 0;
           do {
-            num = getRandomInteger(-250, 250 + k * 100);
+            num = getRealRandomInteger(-250, 250 + k * 100);
             k++;
           } while (used.has(num));
 
@@ -332,7 +332,7 @@ export default class HideInitializingCode extends Transform {
           typeof o.value === "number" &&
           Math.floor(o.value) === o.value &&
           Math.abs(o.value) < 100_000 &&
-          Math.random() < 4 / made
+          fixRandom() < 4 / made
         ) {
           made++;
           return () => {
@@ -375,7 +375,7 @@ export default class HideInitializingCode extends Transform {
       }
 
       function ternaryHell(expr, depth = 1) {
-        if (!depth || depth > 5 || Math.random() > 0.99 / (depth / 2)) {
+        if (!depth || depth > 5 || fixRandom() > 0.99 / (depth / 2)) {
           return expr;
         }
 
@@ -384,7 +384,7 @@ export default class HideInitializingCode extends Transform {
           getRandomInteger(-250, 250)
         );
 
-        if (Math.random() > 0.5) {
+        if (fixRandom() > 0.5) {
           return ConditionalExpression(
             truePredicate(),
             ternaryHell(expr, depth + 1),

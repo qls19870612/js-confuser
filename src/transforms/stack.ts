@@ -29,7 +29,12 @@ import {
   isVarContext,
   prepend,
 } from "../util/insert";
-import { choice, getRandomInteger, getRandomString } from "../util/random";
+import {
+  choice, fixRandom,
+  getRandomInteger,
+  getRandomString,
+  getRealRandomInteger
+} from "../util/random";
 import Transform from "./transform";
 
 export default class Stack extends Transform {
@@ -166,7 +171,7 @@ export default class Stack extends Transform {
           typeof number !== "number" ||
           !Object.keys(deadValues).length ||
           depth > 5 ||
-          Math.random() > (depth == 0 ? 0.9 : 0.8 / (depth * 2))
+          fixRandom() > (depth == 0 ? 0.9 : 0.8 / (depth * 2))
         ) {
           return Literal(number);
         }
@@ -287,7 +292,7 @@ export default class Stack extends Transform {
           typeof o.value === "number" &&
           Math.floor(o.value) === o.value &&
           Math.abs(o.value) < 100_000 &&
-          Math.random() < 4 / made &&
+          fixRandom() < 4 / made &&
           p.find((x) => isFunction(x)) === object
         ) {
           made++;
@@ -302,7 +307,7 @@ export default class Stack extends Transform {
       object.body.body.forEach((stmt, index) => {
         var isFirst = index == 0;
 
-        if (isFirst || Math.random() < 0.9 / index) {
+        if (isFirst || fixRandom() < 0.9 / index) {
           var exprs = [];
 
           var changes = getRandomInteger(isFirst ? 2 : 1, isFirst ? 3 : 2);
@@ -319,7 +324,7 @@ export default class Stack extends Transform {
             var i = 0;
             do {
               newIndex =
-                getRandomInteger(0, 250 + subscripts.size + i * 1000) + "";
+                  getRealRandomInteger(0, 250 + subscripts.size + i * 1000) + "";
               i++;
             } while (valueSet.has(newIndex));
 
@@ -345,7 +350,7 @@ export default class Stack extends Transform {
                 var rand = getRandomInteger(-250, 250);
 
                 // modify an already existing dead value index
-                if (Math.random() > 0.5) {
+                if (fixRandom() > 0.5) {
                   var alreadyExisting = choice(Object.keys(deadValues));
 
                   if (typeof alreadyExisting === "string") {

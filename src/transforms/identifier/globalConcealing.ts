@@ -23,7 +23,7 @@ import {
 } from "../../util/gen";
 import { append, prepend } from "../../util/insert";
 import { getIdentifierInfo } from "../../util/identifiers";
-import { getRandomInteger } from "../../util/random";
+import {fixRandom, getRandomInteger, getRealRandomInteger} from "../../util/random";
 import { reservedIdentifiers, reservedKeywords } from "../../constants";
 import { ComputeProbabilityMap } from "../../probability";
 
@@ -188,7 +188,7 @@ export default class GlobalConcealing extends Transform {
           var locations: Location[] = globals[name];
           var state;
           do {
-            state = getRandomInteger(-1000, 1000 + used.size);
+            state = getRealRandomInteger(-1000, 1000 + used.size);
           } while (used.has(state));
           used.add(state);
 
@@ -223,7 +223,7 @@ export default class GlobalConcealing extends Transform {
           if (!newNames[name]) {
             var state;
             do {
-              state = getRandomInteger(
+              state = getRealRandomInteger(
                 -1000,
                 1000 + used.size + this.options.globalVariables.size * 100
               );
@@ -259,7 +259,7 @@ export default class GlobalConcealing extends Transform {
                     )
                   ),
                 ];
-                if (Math.random() > 0.5 && name) {
+                if (fixRandom() > 0.5 && name) {
                   body = [
                     ExpressionStatement(
                       AssignmentExpression(

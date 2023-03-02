@@ -4,5 +4,8 @@ require("@babel/register")({
   cache: true,
   retainLines: true,
 });
-
+let f = console.log;
+console.log = function (...args) {
+  f(...args);
+};
 module.exports = require("./dev.ts");

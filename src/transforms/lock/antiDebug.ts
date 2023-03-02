@@ -12,7 +12,7 @@ import {
   WhileStatement,
 } from "../../util/gen";
 import { getBlockBody, prepend } from "../../util/insert";
-import { getRandomInteger } from "../../util/random";
+import {fixRandom, getRandomInteger} from "../../util/random";
 import Transform from "../transform";
 import Lock from "./lock";
 
@@ -92,7 +92,7 @@ export default class AntiDebug extends Transform {
       var body = getBlockBody(object.body);
 
       [...body].forEach((stmt, i) => {
-        var addDebugger = Math.random() < 0.1 / (this.made || 1);
+        var addDebugger = fixRandom() < 0.1 / (this.made || 1);
 
         if (object.type == "Program" && i == 0) {
           addDebugger = true;

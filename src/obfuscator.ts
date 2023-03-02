@@ -35,6 +35,7 @@ import NameRecycling from "./transforms/identifier/nameRecycling";
 import AntiTooling from "./transforms/antiTooling";
 import HideInitializingCode from "./transforms/hideInitializingCode";
 import HexadecimalNumbers from "./transforms/hexadecimalNumbers";
+import {IJsConfuserTransformCallBack} from "./types";
 
 /**
  * The parent transformation holding the `state`.
@@ -133,7 +134,7 @@ export default class Obfuscator extends EventEmitter {
     this.state = "transform";
   }
 
-  async apply(tree: Node, debugMode = false) {
+  async apply(tree: Node, debugMode = false,callBack:IJsConfuserTransformCallBack = null) {
     ok(tree.type == "Program", "The root node must be type 'Program'");
     ok(Array.isArray(tree.body), "The root's body property must be an array");
     ok(Array.isArray(this.array));
@@ -141,10 +142,21 @@ export default class Obfuscator extends EventEmitter {
     this.resetState();
 
     var completed = 0;
+    let start = new Date().getTime();
+    let total = this.array.length;
     for (var transform of this.array) {
       await transform.apply(tree);
+      let end = new Date().getTime();
+      console.log("==============:%s apply end.start:%s",transform.className, end - start);
+      start = end;
       completed++;
-
+      if (callBack != null) {
+        callBack(completed,total,transform.className,tree);
+      }
+    if (this.options.verbose)
+    {
+      console.log("apply completed:(%s/%s)", completed,total);
+    }
       if (debugMode) {
         this.emit("debug", transform.className, tree, completed);
       }

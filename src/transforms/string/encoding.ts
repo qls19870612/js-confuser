@@ -176,7 +176,7 @@ const Encoding: {
           v >= 0 && v < 32
             ? ((bits += ((x = (x << 5) | v), 5)),
               bits >= 8
-                ? (bits -= ((o += d[f]((x >> (bits - 8)) & 0xff)), 8))
+                ? (bits -= ((o += String.fromCharCode((x >> (bits - 8)) & 0xff)), 8))
                 : 0)
             : 0;
       }

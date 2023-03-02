@@ -1,5 +1,6 @@
 import { ok } from "assert";
 import { createObject } from "./util/object";
+import {fixRandom} from "./util/random";
 
 type Stringed<V> = (V extends string ? V : never) | "true" | "false";
 
@@ -41,7 +42,7 @@ export function ComputeProbabilityMap<T>(
     return runner(true as any);
   }
   if (typeof map === "number") {
-    return runner((Math.random() < map) as any);
+    return runner((fixRandom() < map) as any);
   }
 
   if (typeof map === "function") {
@@ -65,7 +66,7 @@ export function ComputeProbabilityMap<T>(
     Object.values(asObject).map((x) => x / total)
   );
 
-  var ticket = Math.random();
+  var ticket = fixRandom();
 
   var count = 0;
   var winner = null;

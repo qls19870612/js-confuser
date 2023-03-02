@@ -33,7 +33,7 @@ import {
   prepend,
   clone,
 } from "../util/insert";
-import { shuffle } from "../util/random";
+import {fixRandom, shuffle} from "../util/random";
 import Transform from "./transform";
 
 /**
@@ -409,7 +409,7 @@ export default class Flatten extends Transform {
 
       shuffle(decoyNodes);
       decoyNodes.forEach((decoyNode) => {
-        if (Math.random() < 0.5) {
+        if (fixRandom() < 0.5) {
           newObjectBody.push(decoyNode);
         }
       });

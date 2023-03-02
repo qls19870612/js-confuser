@@ -41,7 +41,12 @@ import {
   getVarContext,
   isVarContext,
 } from "../../util/insert";
-import { choice, getRandomInteger, shuffle } from "../../util/random";
+import {
+  choice, fixRandom,
+  getRandomInteger,
+  getRealRandomInteger,
+  shuffle
+} from "../../util/random";
 import Transform from "../transform";
 import ChoiceFlowObfuscation from "./choiceFlowObfuscation";
 import ControlFlowObfuscation from "./controlFlowObfuscation";
@@ -286,7 +291,7 @@ export default class ControlFlowFlattening extends Transform {
               o.type == "Literal" &&
               typeof o.value == "string" &&
               !o.regex &&
-              Math.random() / (Object.keys(stringBank).length / 2 + 1) > 0.5
+              fixRandom() / (Object.keys(stringBank).length / 2 + 1) > 0.5
             ) {
               needsStringBankVar = true;
               if (!stringBankByLabels[currentLabel]) {
@@ -641,7 +646,7 @@ export default class ControlFlowFlattening extends Transform {
             return;
           }
 
-          if (!currentBody.length || Math.random() < fraction) {
+          if (!currentBody.length || fixRandom() < fraction) {
             currentBody.push(stmt);
           } else {
             // Start new chunk
@@ -757,7 +762,7 @@ export default class ControlFlowFlattening extends Transform {
       var endLabel = chunks[Object.keys(chunks).length - 1].label;
 
       do {
-        var newState = getRandomInteger(1, chunks.length * 15);
+        var newState = getRealRandomInteger(1, chunks.length * 15);
         if (this.isDebug) {
           newState = caseSelection.size;
         }
@@ -796,7 +801,6 @@ export default class ControlFlowFlattening extends Transform {
         var correctIndex = getRandomInteger(0, stateValues.length);
         stateValues[correctIndex] =
           state - (getCurrentState() - stateValues[correctIndex]);
-
         labelToStates[chunk.label] = stateValues;
       });
 
@@ -807,13 +811,13 @@ export default class ControlFlowFlattening extends Transform {
 
       const numberLiteral = (num, depth, stateValues) => {
         ok(Array.isArray(stateValues));
-        if (depth > 10 || Math.random() > 0.8 / (depth * 4)) {
+        if (depth > 10 || fixRandom() > 0.8 / (depth * 4)) {
           return Literal(num);
         }
 
         var opposing = getRandomInteger(0, stateVars.length);
 
-        if (Math.random() > 0.5) {
+        if (fixRandom() > 0.5) {
           var x = getRandomInteger(-250, 250);
           var operator = choice(["<", ">"]);
           var answer =
@@ -860,7 +864,7 @@ export default class ControlFlowFlattening extends Transform {
             Identifier(stateVars[index]),
             Literal(newValue)
           );
-        } else if (Math.random() > 0.5) {
+        } else if (fixRandom() > 0.5) {
           expr = AssignmentExpression(
             "+=",
             Identifier(stateVars[index]),
@@ -924,7 +928,7 @@ export default class ControlFlowFlattening extends Transform {
               typeof o.value === "number" &&
               Math.floor(o.value) === o.value &&
               Math.abs(o.value) < 100_000 &&
-              Math.random() < 4 / made &&
+              fixRandom() < 4 / made &&
               !p.find((x) => isVarContext(x))
             ) {
               made++;
@@ -1077,7 +1081,6 @@ export default class ControlFlowFlattening extends Transform {
         declarations.push(VariableDeclarator(resultVar));
         declarations.push(VariableDeclarator(argVar));
       }
-
       if (needsStringBankVar) {
         declarations.push(
           VariableDeclarator(

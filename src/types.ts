@@ -17,7 +17,7 @@ export interface IJsConfuser {
   debugTransformations: IJsConfuserDebugTransformations;
   debugObfuscation: IJsConfuserDebugObfuscation;
 
-  (code: string, options: ObfuscateOptions): Promise<string>;
+  (code: string, options: ObfuscateOptions,callBack:IJsConfuserTransformCallBack): Promise<string>;
 
   Transform: typeof Transform;
   Obfuscator: typeof Obfuscator;
@@ -31,7 +31,7 @@ export interface IJsConfuser {
  * [See all settings here](https://github.com/MichaelXF/js-confuser#options)
  */
 export interface IJsConfuserObfuscate {
-  (code: string, options: ObfuscateOptions): Promise<string>;
+  (code: string, options: ObfuscateOptions,callBack:IJsConfuserTransformCallBack): Promise<string>;
 }
 
 /**
@@ -46,6 +46,9 @@ export interface IJsConfuserObfuscate {
  */
 export interface IJsConfuserObfuscateAST {
   (AST: any, options: ObfuscateOptions): Promise<void>;
+}
+export interface IJsConfuserTransformCallBack {
+  (completed:number, total:number,className:string, tree: any):void;
 }
 
 export interface IJsConfuserPresets {

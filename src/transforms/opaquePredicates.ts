@@ -19,10 +19,7 @@ import {
   AssignmentPattern,
 } from "../util/gen";
 import {
-  choice,
-  getRandomInteger,
-  getRandomString,
-  shuffle,
+  choice, fixRandom, getRandomInteger, getRandomString, shuffle,
 } from "../util/random";
 import { ObfuscateOrder } from "../order";
 import { clone, prepend } from "../util/insert";
@@ -124,7 +121,7 @@ export default class OpaquePredicates extends Transform {
 
       if (
         !expr ||
-        Math.random() < 0.5 / (Object.keys(this.predicates).length || 1)
+        fixRandom() < 0.5 / (Object.keys(this.predicates).length || 1)
       ) {
         var prop = this.gen.generate();
         var accessor = MemberExpression(
@@ -175,7 +172,7 @@ export default class OpaquePredicates extends Transform {
           case "string":
             var str = this.gen.generate();
             var index = getRandomInteger(0, str.length);
-            var fn = Math.random() > 0.5 ? "charAt" : "charCodeAt";
+            var fn = fixRandom() > 0.5 ? "charAt" : "charCodeAt";
 
             this.predicate.properties.push(
               Property(Identifier(prop), Literal(str))
@@ -193,7 +190,7 @@ export default class OpaquePredicates extends Transform {
         ok(expr);
         this.predicates[prop] = expr;
 
-        if (Math.random() > 0.8) {
+        if (fixRandom() > 0.8) {
           shuffle(this.predicate.properties);
         }
       }
@@ -217,7 +214,7 @@ export default class OpaquePredicates extends Transform {
           clone(test),
           matching
         );
-        if (Math.random() > 0.5) {
+        if (fixRandom() > 0.5) {
           conditionalExpression = ConditionalExpression(
             UnaryExpression("!", cloned),
             matching,

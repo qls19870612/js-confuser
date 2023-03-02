@@ -22,7 +22,7 @@ import {
   VariableDeclarator,
 } from "../../util/gen";
 import { append, isLexContext, isVarContext, prepend } from "../../util/insert";
-import { choice, getRandomInteger, getRandomString } from "../../util/random";
+import {choice, fixRandom, getRandomInteger, getRandomString} from "../../util/random";
 import Transform from "../transform";
 import Encoding from "./encoding";
 
@@ -39,17 +39,18 @@ export function isModuleSource(object: Node, parents: Node[]) {
     return true;
   }
 
-  if (
-    parents[1] &&
-    parents[1].type == "CallExpression" &&
-    parents[1].arguments[0] === object &&
-    parents[1].callee.type == "Identifier"
-  ) {
-    if (
-      parents[1].callee.name == "require" ||
-      parents[1].callee.name == "import"
-    ) {
-      return true;
+  let p1 = parents[1];
+  if (p1 && p1.type == "CallExpression")
+  {
+    if (p1.arguments[0] === object)
+    {
+      if (p1.callee.type == "Identifier")
+      {
+        if (p1.callee.name == "require" || p1.callee.name == "import")
+        {
+          return true;
+        }
+      }
     }
   }
 
@@ -166,7 +167,7 @@ export default class StringConcealing extends Transform {
       var types = Object.keys(this.encoding);
 
       var type = choice(types);
-      if (!type || (!this.hasAllEncodings && Math.random() > 0.9)) {
+      if (!type || (!this.hasAllEncodings && fixRandom() > 0.9)) {
         var allowed = Object.keys(Encoding).filter(
           (type) => !this.encoding[type]
         );
@@ -211,7 +212,7 @@ export default class StringConcealing extends Transform {
         var callExpr = CallExpression(Identifier(fnName), [Literal(index)]);
 
         // use `.apply` to fool automated de-obfuscators
-        if (Math.random() > 0.5) {
+        if (fixRandom() > 0.5) {
           callExpr = CallExpression(
             MemberExpression(Identifier(fnName), Identifier("apply"), false),
             [ThisExpression(), ArrayExpression([Literal(index)])]
@@ -219,7 +220,7 @@ export default class StringConcealing extends Transform {
         }
 
         // use `.call`
-        else if (Math.random() > 0.5) {
+        else if (fixRandom() > 0.5) {
           callExpr = CallExpression(
             MemberExpression(Identifier(fnName), Identifier("call"), false),
             [ThisExpression(), Literal(index)]
@@ -227,8 +228,7 @@ export default class StringConcealing extends Transform {
         }
 
         var constantReference =
-          parents.length && Math.random() > 0.5 / this.variablesMade;
-
+          parents.length && fixRandom() > 0.5 / this.variablesMade;
         if (constantReference) {
           // Define the string earlier, reference the name here
 
