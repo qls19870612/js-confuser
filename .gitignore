@@ -110,7 +110,7 @@ dist
 
 dev.error.js
 dev.input.js
-dev.ts
+
 
 Cash.output.js
 
@@ -118,6 +118,5 @@ ES6.output.js
 
 .vscode/
 
-dev.ts
 /.idea
 /res
