@@ -147,9 +147,16 @@ export default class StringConcealing extends Transform {
   }
 
   match(object, parents) {
+    if (object.type!="Literal")
+    {
+      return false;
+    }
+    let type = typeof object.value;
+    if (type!== "string")
+    {
+      return false;
+    }
     return (
-      object.type == "Literal" &&
-      typeof object.value === "string" &&
       object.value.length >= 3 &&
       !isModuleSource(object, parents) &&
       !isDirective(object, parents) //&&

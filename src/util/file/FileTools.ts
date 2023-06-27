@@ -190,11 +190,19 @@ export var FileTools:any={};
 
     FileTools.readFile = function (path, encoding)
     {
-        (encoding === void 0) && (encoding = "utf8");
+
         if (FileTools.fs.existsSync(path))
         {
             var rst;
-            rst = FileTools.fs.readFileSync(path, encoding);
+            if (encoding)
+            {
+
+                rst = FileTools.fs.readFileSync(path,{encoding:encoding});
+            }
+            else
+            {
+                rst = FileTools.fs.readFileSync(path);
+            }
             if (((typeof rst == 'string')) && rst.charCodeAt(0) == 65279 && encoding == "utf8")
             {
                 rst = rst.substr(1);

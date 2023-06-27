@@ -48,7 +48,7 @@ export interface IJsConfuserObfuscateAST {
   (AST: any, options: ObfuscateOptions): Promise<void>;
 }
 export interface IJsConfuserTransformCallBack {
-  (completed:number, total:number,className:string, tree: any):void;
+  (completed:number, total:number,transform:Transform, tree: any):void;
 }
 
 export interface IJsConfuserPresets {

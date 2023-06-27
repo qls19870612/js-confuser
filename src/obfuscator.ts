@@ -151,7 +151,7 @@ export default class Obfuscator extends EventEmitter {
       start = end;
       completed++;
       if (callBack != null) {
-        callBack(completed,total,transform.className,tree);
+        callBack(completed,total,transform ,tree);
       }
     if (this.options.verbose)
     {

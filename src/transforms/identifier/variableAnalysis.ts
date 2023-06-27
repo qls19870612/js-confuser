@@ -103,8 +103,11 @@ export default class VariableAnalysis extends Transform {
               this.defined.set(definingContext, new Set());
             }
             this.defined.get(definingContext).add(name);
-            this.references.has(definingContext) &&
+            // console.log("defined add definingContext.type:%s,name:%s", definingContext.type,name);
+            if(this.references.has(definingContext)){
               this.references.get(definingContext).delete(name);
+              // console.log("references remove name:%s", name);
+            }
           } else {
             // Add to references Map
             if (
@@ -114,6 +117,7 @@ export default class VariableAnalysis extends Transform {
               if (!this.references.has(definingContext)) {
                 this.references.set(definingContext, new Set());
               }
+              // console.log("references add  definingContext.type:%s,name:%s", definingContext.type,name);
               this.references.get(definingContext).add(name);
             }
           }

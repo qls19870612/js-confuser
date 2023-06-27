@@ -49,7 +49,7 @@ export function isValidIdentifier(name: string): boolean {
   if (typeof name !== "string") {
     return false;
   }
-  if (name.includes(".") || name.includes(" ")) {
+  if (name.includes(".") || name.includes(" ")||name.concat("\\")) {
     return false;
   }
 
@@ -140,7 +140,8 @@ export function isPrimitive(node: Node) {
       return true;
     }
   } else if (node.type == "Identifier") {
-    return primitiveIdentifiers.has(node.name);
+    let b = primitiveIdentifiers.has(node.name);
+    return b;
   }
 
   return false;

@@ -109,7 +109,7 @@ class _FileManager
         (errorAlert === null) && (errorAlert = true);
         try
         {
-            return FileTools.readFile(path);
+            return FileTools.readFile(path,"utf-8");
         } catch (e)
         {
             if (errorAlert) Sys.alert("Read file failed:" + path);
