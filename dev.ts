@@ -17,9 +17,9 @@ import {ObfuscateOrder} from "./src/order";
 // let rawFile = "./res/bundle.js"
 // let rawFile = "./res/test.js"
 // let rawFile = "./res/ReleaseLoader.js"
-let rawFile = "./res/bundle.js"
+// let rawFile = "./res/bundle.js"
 // let rawFile = "D:\\workspace\\jsmix/code.js"
-// let rawFile = "./res/miniGame.js"
+let rawFile = "./res/miniGame.js"
 let path = require("path");
 
 let fileName = path.basename(rawFile);
